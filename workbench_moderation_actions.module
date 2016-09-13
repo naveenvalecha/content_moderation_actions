@@ -1,0 +1,60 @@
+<?php
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Url;
+use Drupal\workbench_moderation\Entity\ModerationState;
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_entity_operation().
+ */
+function workbench_moderation_actions_entity_operation(EntityInterface $entity) {
+  $operations = [];
+  /** @var \Drupal\workbench_moderation\ModerationInformationInterface $moderation_information */
+  $moderation_information = \Drupal::service('workbench_moderation.moderation_information');
+  if (!$moderation_information->isModeratableEntity($entity)) {
+    return $operations;
+  }
+
+  /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
+  $entity = $moderation_information->getLatestRevision($entity->getEntityTypeId(), $entity->id());
+
+  /** @var \Drupal\workbench_moderation\StateTransitionValidation $transition_validation */
+  $transition_validation = \Drupal::service('workbench_moderation.state_transition_validation');
+  $states = $transition_validation->getValidTransitionTargets($entity, \Drupal::currentUser());
+
+  /** @var \Drupal\Core\Render\RendererInterface $renderer */
+  $renderer = \Drupal::service('renderer');
+  $build = [
+    '#attached' => [
+      'library' => [
+        'workbench_moderation_actions/ajax_commands',
+      ],
+    ],
+  ];
+  $renderer->render($build);
+
+  $operations = array_map(function (ModerationState $state) use ($entity) {
+    $url = Url::fromRoute('workbench_moderation_actions.state_change', [
+      'entity_type_id' => $entity->getEntityTypeId(),
+      'entity_id' => $entity->id(),
+      'from' => $entity->get('moderation_state')->target_id,
+      'to' => $state->id(),
+    ]);
+
+    $operation = [
+      'title' => t('Set to @state_label', [
+        '@state_label' => $state->label(),
+      ]),
+      'url' => $url,
+      'attributes' => [
+        'class' => ['use-ajax'],
+      ],
+      'weight' => 20,
+    ];
+    return $operation;
+  }, $states);
+  return $operations;
+}
