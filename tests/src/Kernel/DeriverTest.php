@@ -1,15 +1,15 @@
 <?php
 
-namespace Drupal\Tests\workbench_moderation_actions\Kernel;
+namespace Drupal\Tests\content_moderation_actions\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\node\Entity\NodeType;
-use Drupal\workbench_moderation_actions\Plugin\Action\StateChange;
+use Drupal\content_moderation_actions\Plugin\Action\StateChange;
 
 /**
- * @group workbench_moderation_actions
+ * @group content_moderation_actions
  *
- * @see \Drupal\workbench_moderation_actions\Plugin\Deriver\StateChangeDeriver
+ * @see \Drupal\content_moderation_actions\Plugin\Deriver\StateChangeDeriver
  */
 class DeriverTest extends KernelTestBase {
 
@@ -21,7 +21,7 @@ class DeriverTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['workbench_moderation', 'workbench_moderation_actions', 'node', 'user', 'system'];
+  public static $modules = ['content_moderation', 'content_moderation_actions', 'node', 'user', 'system'];
 
   /**
    * {@inheritdoc}
@@ -30,15 +30,15 @@ class DeriverTest extends KernelTestBase {
     parent::setUp();
 
     $this->installEntitySchema('node');
-    $this->installConfig('workbench_moderation');
+    $this->installConfig('content_moderation');
   }
 
   public function testAvailableActionPlugins() {
     $bundle = NodeType::create([
       'type' => 'test'
     ]);
-    $bundle->setThirdPartySetting('workbench_moderation', 'enabled', TRUE);
-    $bundle->setThirdPartySetting('workbench_moderation', 'allowed_moderation_states', ['archive', 'published', 'draft', 'review']);
+    $bundle->setThirdPartySetting('content_moderation', 'enabled', TRUE);
+    $bundle->setThirdPartySetting('content_moderation', 'allowed_moderation_states', ['archive', 'published', 'draft', 'review']);
     $bundle->save();
 
     /** @var \Drupal\Core\Action\ActionManager $action_manager */
@@ -46,7 +46,7 @@ class DeriverTest extends KernelTestBase {
 
     $definitions = $action_manager->getDefinitions();
     $definitions_wb = array_filter($definitions, function (array $definition) {
-      return $definition['provider'] === 'workbench_moderation_actions';
+      return $definition['provider'] === 'content_moderation_actions';
     });
     $this->assertCount(4, $definitions_wb);
     $this->assertArrayHasKey('state_change:node__archived', $definitions_wb);

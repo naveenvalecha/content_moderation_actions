@@ -5,12 +5,12 @@
  */
 
 use Drupal\system\Entity\Action;
-use Drupal\workbench_moderation_actions\Plugin\Deriver\StateChangeDeriver;
+use Drupal\content_moderation_actions\Plugin\Deriver\StateChangeDeriver;
 
 /**
  * Implements hook_install().
  */
-function workbench_moderation_actions_install() {
+function content_moderation_actions_install() {
   // Remove the publish/unpublished actions.
   if ($action = Action::load('node_publish_action')) {
     $action->delete();

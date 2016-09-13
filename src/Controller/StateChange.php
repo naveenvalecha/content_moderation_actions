@@ -1,26 +1,25 @@
 <?php
 
-namespace Drupal\workbench_moderation_actions\Controller;
+namespace Drupal\content_moderation_actions\Controller;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\workbench_moderation\Entity\ModerationState;
-use Drupal\workbench_moderation\ModerationInformationInterface;
-use Drupal\workbench_moderation\StateTransitionValidation;
-use Drupal\workbench_moderation_actions\AjaxReloadCommand;
+use Drupal\content_moderation\Entity\ModerationState;
+use Drupal\content_moderation\ModerationInformationInterface;
+use Drupal\content_moderation\StateTransitionValidation;
+use Drupal\content_moderation_actions\AjaxReloadCommand;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Response;
 
 class StateChange extends ControllerBase {
 
   /**
-   * @var \Drupal\workbench_moderation\ModerationInformationInterface
+   * @var \Drupal\content_moderation\ModerationInformationInterface
    */
   protected $moderationInfo;
 
   /**
-   * @var \Drupal\workbench_moderation\StateTransitionValidation
+   * @var \Drupal\content_moderation\StateTransitionValidation
    */
   protected $validation;
 
@@ -34,8 +33,8 @@ class StateChange extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('workbench_moderation.moderation_information'),
-      $container->get('workbench_moderation.state_transition_validation')
+      $container->get('content_moderation.moderation_information'),
+      $container->get('content_moderation.state_transition_validation')
     );
   }
 

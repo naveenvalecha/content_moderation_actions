@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\workbench_moderation_actions;
+namespace Drupal\content_moderation_actions;
 
 use Drupal\Core\Ajax\CommandInterface;
 

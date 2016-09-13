@@ -1,18 +1,18 @@
 <?php
 
-namespace Drupal\workbench_moderation_actions\Plugin\Deriver;
+namespace Drupal\content_moderation_actions\Plugin\Deriver;
 
 use Drupal\Component\Plugin\Derivative\DeriverBase;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
-use Drupal\workbench_moderation\ModerationInformationInterface;
+use Drupal\content_moderation\ModerationInformationInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class StateChangeDeriver extends DeriverBase implements ContainerDeriverInterface {
 
   /**
-   * @var \Drupal\workbench_moderation\ModerationInformationInterface
+   * @var \Drupal\content_moderation\ModerationInformationInterface
    */
   protected $moderationInformation;
 
@@ -34,7 +34,7 @@ class StateChangeDeriver extends DeriverBase implements ContainerDeriverInterfac
    */
   public static function create(ContainerInterface $container, $base_plugin_id) {
     return new static(
-      $container->get('workbench_moderation.moderation_information'),
+      $container->get('content_moderation.moderation_information'),
       $container->get('entity_type.manager')
     );
   }
@@ -47,7 +47,7 @@ class StateChangeDeriver extends DeriverBase implements ContainerDeriverInterfac
   }
 
   /**
-   * @return \Drupal\workbench_moderation\ModerationStateInterface[]
+   * @return \Drupal\content_moderation\ModerationStateInterface[]
    */
   protected function getAvailableStates() {
     return $this->entityTypeManager->getStorage('moderation_state')->loadMultiple();

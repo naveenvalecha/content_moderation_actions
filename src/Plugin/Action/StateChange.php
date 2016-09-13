@@ -1,16 +1,15 @@
 <?php
 
-namespace Drupal\workbench_moderation_actions\Plugin\Action;
+namespace Drupal\content_moderation_actions\Plugin\Action;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Action\ActionBase;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\workbench_moderation\ModerationInformationInterface;
-use Drupal\workbench_moderation\StateTransitionValidation;
+use Drupal\content_moderation\ModerationInformationInterface;
+use Drupal\content_moderation\StateTransitionValidation;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -19,18 +18,18 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @Action(
  *   id = "state_change",
  *   deriver =
- *   "Drupal\workbench_moderation_actions\Plugin\Deriver\StateChangeDeriver"
+ *   "Drupal\content_moderation_actions\Plugin\Deriver\StateChangeDeriver"
  * )
  */
 class StateChange extends ActionBase implements ContainerFactoryPluginInterface {
 
   /**
-   * @var \Drupal\workbench_moderation\ModerationInformationInterface
+   * @var \Drupal\content_moderation\ModerationInformationInterface
    */
   protected $moderationInfo;
 
   /**
-   * @var \Drupal\workbench_moderation\StateTransitionValidation
+   * @var \Drupal\content_moderation\StateTransitionValidation
    */
   protected $validation;
 
@@ -54,8 +53,8 @@ class StateChange extends ActionBase implements ContainerFactoryPluginInterface 
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
       $configuration, $plugin_id, $plugin_definition,
-      $container->get('workbench_moderation.moderation_information'),
-      $container->get('workbench_moderation.state_transition_validation'),
+      $container->get('content_moderation.moderation_information'),
+      $container->get('content_moderation.state_transition_validation'),
       $container->get('entity_type.manager')
     );
   }
@@ -64,7 +63,7 @@ class StateChange extends ActionBase implements ContainerFactoryPluginInterface 
    * {@inheritdoc}
    */
   public function execute(ContentEntityInterface $entity = NULL) {
-    if ($entity && !$this->moderationInfo->isModeratableEntity($entity)) {
+    if ($entity && !$this->moderationInfo->isModeratedEntity($entity)) {
       drupal_set_message($this->t('One or more entities were skipped as they are under moderation and may not be directly published or unpublished.'));
       return;
     }

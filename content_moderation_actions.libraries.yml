@@ -1,5 +1,5 @@
 ajax_commands:
   js:
-    js/workbench_moderation_actions.js: {}
+    js/content_moderation_actions.js: {}
   dependencies:
     - core/drupal.ajax
