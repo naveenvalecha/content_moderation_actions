@@ -2,14 +2,14 @@
 
 namespace Drupal\content_moderation_actions\Plugin\Action;
 
+use Drupal\content_moderation\ModerationInformationInterface;
+use Drupal\content_moderation\StateTransitionValidation;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Action\ActionBase;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\content_moderation\ModerationInformationInterface;
-use Drupal\content_moderation\StateTransitionValidation;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -40,6 +40,10 @@ class StateChange extends ActionBase implements ContainerFactoryPluginInterface 
    */
   protected $entityTypeManager;
 
+  /**
+   *  Construct an object of StateChange class.
+   * 
+   */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, ModerationInformationInterface $mod_info, StateTransitionValidation $validation, EntityTypeManagerInterface $entityTypeManager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->moderationInfo = $mod_info;
@@ -109,4 +113,5 @@ class StateChange extends ActionBase implements ContainerFactoryPluginInterface 
 
     return $return_as_object ? $result : $result->isAllowed();
   }
+
 }

@@ -2,9 +2,9 @@
 
 namespace Drupal\Tests\content_moderation_actions\Kernel;
 
+use Drupal\content_moderation_actions\Plugin\Action\StateChange;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\node\Entity\NodeType;
-use Drupal\content_moderation_actions\Plugin\Action\StateChange;
 
 /**
  * @group content_moderation_actions
@@ -21,7 +21,13 @@ class DeriverTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['content_moderation', 'content_moderation_actions', 'node', 'user', 'system'];
+  public static $modules = [
+    'content_moderation',
+    'content_moderation_actions',
+    'node',
+    'user',
+    'system',
+  ];
 
   /**
    * {@inheritdoc}
@@ -33,12 +39,20 @@ class DeriverTest extends KernelTestBase {
     $this->installConfig('content_moderation');
   }
 
+  /**
+   *
+   */
   public function testAvailableActionPlugins() {
     $bundle = NodeType::create([
-      'type' => 'test'
+      'type' => 'test',
     ]);
     $bundle->setThirdPartySetting('content_moderation', 'enabled', TRUE);
-    $bundle->setThirdPartySetting('content_moderation', 'allowed_moderation_states', ['archive', 'published', 'draft', 'review']);
+    $bundle->setThirdPartySetting('content_moderation', 'allowed_moderation_states', [
+      'archive',
+      'published',
+      'draft',
+      'review',
+    ]);
     $bundle->save();
 
     /** @var \Drupal\Core\Action\ActionManager $action_manager */

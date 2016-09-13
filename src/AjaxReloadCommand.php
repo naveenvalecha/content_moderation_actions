@@ -4,6 +4,9 @@ namespace Drupal\content_moderation_actions;
 
 use Drupal\Core\Ajax\CommandInterface;
 
+/**
+ * AjaxReloadCommand class.
+ */
 class AjaxReloadCommand implements CommandInterface {
 
   /**

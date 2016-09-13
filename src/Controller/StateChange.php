@@ -2,15 +2,18 @@
 
 namespace Drupal\content_moderation_actions\Controller;
 
-use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Controller\ControllerBase;
 use Drupal\content_moderation\Entity\ModerationState;
 use Drupal\content_moderation\ModerationInformationInterface;
 use Drupal\content_moderation\StateTransitionValidation;
 use Drupal\content_moderation_actions\AjaxReloadCommand;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * StateChange Controller class.
+ */
 class StateChange extends ControllerBase {
 
   /**
@@ -23,6 +26,9 @@ class StateChange extends ControllerBase {
    */
   protected $validation;
 
+  /**
+   *
+   */
   public function __construct(ModerationInformationInterface $moderationInformation, StateTransitionValidation $validation) {
     $this->moderationInfo = $moderationInformation;
     $this->validation = $validation;
@@ -38,6 +44,9 @@ class StateChange extends ControllerBase {
     );
   }
 
+  /**
+   *
+   */
   public function change($entity_type_id, $entity_id, $from, $to) {
     $latest_revision = $this->moderationInfo->getLatestRevision($entity_type_id, $entity_id);
     $latest_revision->get('moderation_state')->target_id = $to;
@@ -53,6 +62,9 @@ class StateChange extends ControllerBase {
       ->addCommand(new AjaxReloadCommand());
   }
 
+  /**
+   *
+   */
   public function access($entity_type_id, $entity_id, $from, $to) {
     return AccessResult::allowedIf($this->validation->userMayTransition($from, $to, $this->currentUser()))
       ->cachePerPermissions();

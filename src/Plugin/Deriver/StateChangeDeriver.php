@@ -3,12 +3,15 @@
 namespace Drupal\content_moderation_actions\Plugin\Deriver;
 
 use Drupal\Component\Plugin\Derivative\DeriverBase;
+use Drupal\content_moderation\ModerationInformationInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
-use Drupal\content_moderation\ModerationInformationInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ *
+ */
 class StateChangeDeriver extends DeriverBase implements ContainerDeriverInterface {
 
   /**
@@ -39,6 +42,9 @@ class StateChangeDeriver extends DeriverBase implements ContainerDeriverInterfac
     );
   }
 
+  /**
+   *
+   */
   protected function getModeratedEntityTypeLabels() {
     $entity_types = $this->moderationInformation->selectRevisionableEntities($this->entityTypeManager->getDefinitions());
     return array_map(function (EntityTypeInterface $entityType) {
@@ -50,7 +56,8 @@ class StateChangeDeriver extends DeriverBase implements ContainerDeriverInterfac
    * @return \Drupal\content_moderation\ModerationStateInterface[]
    */
   protected function getAvailableStates() {
-    return $this->entityTypeManager->getStorage('moderation_state')->loadMultiple();
+    return $this->entityTypeManager->getStorage('moderation_state')
+      ->loadMultiple();
   }
 
   /**

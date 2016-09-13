@@ -4,8 +4,8 @@
  * @file
  */
 
-use Drupal\system\Entity\Action;
 use Drupal\content_moderation_actions\Plugin\Deriver\StateChangeDeriver;
+use Drupal\system\Entity\Action;
 
 /**
  * Implements hook_install().
