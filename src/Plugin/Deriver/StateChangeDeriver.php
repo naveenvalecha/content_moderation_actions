@@ -6,6 +6,8 @@ use Drupal\Component\Plugin\Derivative\DeriverBase;
 use Drupal\content_moderation\ModerationInformationInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\ContentEntityTypeInterface;
 use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -46,7 +48,7 @@ class StateChangeDeriver extends DeriverBase implements ContainerDeriverInterfac
    *
    */
   protected function getModeratedEntityTypeLabels() {
-    $entity_types = $this->moderationInformation->selectRevisionableEntities($this->entityTypeManager->getDefinitions());
+    $entity_types = $this->selectRevisionableEntities($this->entityTypeManager->getDefinitions());
     return array_map(function (EntityTypeInterface $entityType) {
       return $entityType->getLabel();
     }, $entity_types);
@@ -82,6 +84,17 @@ class StateChangeDeriver extends DeriverBase implements ContainerDeriverInterfac
       }
     }
     return parent::getDerivativeDefinitions($base_plugin_definition);
+  }
+
+  /**
+   * Get revisionable entities.
+   */
+  protected function selectRevisionableEntities(array $entity_types) {
+    return array_filter($entity_types, function (EntityTypeInterface $type) use ($entity_types) {
+      return ($type instanceof ContentEntityTypeInterface)
+      && $type->isRevisionable()
+      && $type->getBundleEntityType();
+    });
   }
 
 }
