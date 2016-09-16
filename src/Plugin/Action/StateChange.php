@@ -3,7 +3,7 @@
 namespace Drupal\content_moderation_actions\Plugin\Action;
 
 use Drupal\content_moderation\ModerationInformationInterface;
-use Drupal\content_moderation\StateTransitionValidation;
+use Drupal\content_moderation\StateTransitionValidationInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Action\ActionBase;
 use Drupal\Core\Entity\ContentEntityInterface;
@@ -44,7 +44,7 @@ class StateChange extends ActionBase implements ContainerFactoryPluginInterface 
    *  Construct an object of StateChange class.
    * 
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ModerationInformationInterface $mod_info, StateTransitionValidation $validation, EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ModerationInformationInterface $mod_info, StateTransitionValidationInterface $validation, EntityTypeManagerInterface $entityTypeManager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->moderationInfo = $mod_info;
     $this->validation = $validation;
@@ -106,8 +106,8 @@ class StateChange extends ActionBase implements ContainerFactoryPluginInterface 
   public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
     /** @var \Drupal\Core\Entity\ContentEntityInterface $object */
     $object = $this->loadLatestRevision($object);
-    $from = $object->get('moderation_state')->target_id;
-    $to = $this->pluginDefinition['state'];
+    $from = $this->entityTypeManager->getStorage('moderation_state')->load($object->get('moderation_state')->target_id);
+    $to = $this->entityTypeManager->getStorage('moderation_state')->load($this->pluginDefinition['state']);
 
     $result = AccessResult::allowedIf($this->validation->userMayTransition($from, $to, $account));
 
